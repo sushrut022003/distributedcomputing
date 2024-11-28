@@ -1,3 +1,6 @@
+RPC client server
+
+
 """Server Program"""
 from xmlrpc.server import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 # Restricting to a specific path
