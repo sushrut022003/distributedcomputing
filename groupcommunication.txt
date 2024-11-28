@@ -1,0 +1,62 @@
+import socket 
+import threading 
+# Function to handle clients 
+def handle_client (client_socket, clients): 
+    while True: 
+        try: 
+            message = client_socket.recv(1024).decode('utf-8') 
+            if not message: 
+                break 
+            print (f"Received: {message}") 
+            broadcast (message, client_socket, clients) 
+        except: 
+            break 
+    client_socket.close() 
+    clients.remove(client_socket) 
+# Function to broadcast messages to all clients 
+def broadcast (message, client_socket, clients): 
+    for client in clients: 
+        if client != client_socket: 
+            try: 
+                client.send(message.encode('utf-8'))
+            except: 
+                client.close()
+                clients.remove(client) 
+def main():                
+    server = socket.socket (socket.AF_INET, socket.SOCK_STREAM) 
+    server.bind(('0.0.0.0', 12345)) 
+    server.listen(5) 
+    print("Server started. waiting for clients...") 
+    clients = [] 
+    while True: 
+        client_socket, addr = server.accept() 
+        print(f"Client {addr} connected.")
+        clients.append (client_socket) 
+        threading.Thread(target=handle_client, args=(client_socket, clients)).start()
+if __name__ == "__main__":
+    main()
+
+import socket 
+import threading 
+def receive_messages (client_socket): 
+    while True: 
+        try: 
+            message = client_socket.recv(1024).decode('utf-8') 
+            if not message: 
+                break 
+            print(f"\n{message}")  
+        except:
+            print("Error in receiving message.") 
+            break         
+def main(): 
+    client_socket = socket.socket (socket.AF_INET, socket.SOCK_STREAM) 
+    client_socket.connect (('127.0.0.1', 12345))  
+    threading. Thread(target=receive_messages, args=(client_socket,)).start()           
+    while True:  
+        message = input() 
+        if message. lowen( ) == "exit":                 
+            break    
+        client_socket.send(message.encode('utf-8'))    
+    client_socket.close()  
+if __name__ == "__main__":  
+    main()
